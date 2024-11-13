@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -55,7 +55,6 @@ public class GsonUtils {
 
             obj = (JsonObject)member;
         }
-
         return obj;
     }
 
@@ -67,9 +66,9 @@ public class GsonUtils {
 
     public static JsonElement merge(JsonElement a, JsonElement b) {
         JsonElement result;
-        if (a == null) {
-            result = b == null ? null : b.deepCopy();
-        } else if (b == null) {
+        if (isNull(a)) {
+            result = copyOrNull(b);
+        } else if (isNull(b)) {
             result = a;
         } else if (a.isJsonArray() && b.isJsonArray()) {
             result = merge(a.getAsJsonArray(), b.getAsJsonArray());
@@ -104,5 +103,15 @@ public class GsonUtils {
             }
         }
         return a;
+    }
+
+    /** Returns true if the argument is either java null or json null. */
+    public static boolean isNull(JsonElement elt) {
+        return elt == null || elt.isJsonNull();
+    }
+
+    /** Returns null if the argument is null, otherwise a deep copy. */
+    public static JsonElement copyOrNull(JsonElement elt) {
+        return elt == null ? null : elt.deepCopy();
     }
 }
