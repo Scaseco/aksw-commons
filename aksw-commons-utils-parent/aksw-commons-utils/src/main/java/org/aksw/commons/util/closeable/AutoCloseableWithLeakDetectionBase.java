@@ -11,8 +11,7 @@ import org.slf4j.LoggerFactory;
  * If finalize is called (typically only by the GC) and there was no prior call to close then
  * a warning including the stack trace is logged.
  *
- * Implementing classes should override {@link #closeActual()} rather than
- * {@link #close()}.
+ * Implementing classes need to override {@link #closeActual()} because {@link #close()} is final.
  *
  * @author Claus Stadler
  *
@@ -40,14 +39,15 @@ public class AutoCloseableWithLeakDetectionBase
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void finalize() throws Throwable {
         try {
             if (!isClosed) {
-            	if (logger.isWarnEnabled()) {
-            		String objectIdStr = ObjectUtils.identityToString(this);
-	                String stackTraceStr = StackTraceUtils.toString(instantiationStackTrace);
-	                logger.warn(String.format("Close invoked via GC rather than user logic - indicates resource leak. Object %s constructed at %s", objectIdStr, stackTraceStr));
-            	}
+                if (logger.isWarnEnabled()) {
+                    String objectIdStr = ObjectUtils.identityToString(this);
+                    String stackTraceStr = StackTraceUtils.toString(instantiationStackTrace);
+                    logger.warn(String.format("Close invoked via GC rather than user logic - indicates resource leak. Object %s constructed at %s", objectIdStr, stackTraceStr));
+                }
                 close();
             }
         } finally {
