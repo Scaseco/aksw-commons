@@ -2,7 +2,7 @@ package org.aksw.commons.collector.core;
 
 import java.io.Serializable;
 import java.util.Iterator;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import org.aksw.commons.collector.core.AggInputFlatMap.AccInputFlatMap;
 import org.aksw.commons.collector.domain.Accumulator;
@@ -28,9 +28,9 @@ public class AggInputFlatMap<I, E, J, O,
 
 
     protected SUBAGG subAgg;
-    protected Function<? super I, ? extends Iterator<? extends J>> inputTransform;
+    protected BiFunction<? super I, E, ? extends Iterator<? extends J>> inputTransform;
 
-    public AggInputFlatMap(SUBAGG subAgg, Function<? super I, ? extends Iterator<? extends J>> inputTransform) {
+    public AggInputFlatMap(SUBAGG subAgg, BiFunction<? super I, E, ? extends Iterator<? extends J>> inputTransform) {
         super();
         this.subAgg = subAgg;
         this.inputTransform = inputTransform;
@@ -85,18 +85,15 @@ public class AggInputFlatMap<I, E, J, O,
         return true;
     }
 
-
-
-
     public class AccTransformInputImpl
         implements AccInputFlatMap<I, E, J, O, SUBACC>, Serializable
     {
         private static final long serialVersionUID = 0;
 
         protected SUBACC subAcc;
-        protected Function<? super I, ? extends Iterator<? extends J>> inputTransform;
+        protected BiFunction<? super I, E, ? extends Iterator<? extends J>> inputTransform;
 
-        public AccTransformInputImpl(SUBACC subAcc, Function<? super I, ? extends Iterator<? extends J>> inputTransform) {
+        public AccTransformInputImpl(SUBACC subAcc, BiFunction<? super I, E, ? extends Iterator<? extends J>> inputTransform) {
             super();
             this.subAcc = subAcc;
             this.inputTransform = inputTransform;
@@ -104,7 +101,7 @@ public class AggInputFlatMap<I, E, J, O,
 
         @Override
         public void accumulate(I input, E env) {
-            Iterator<? extends J> it = inputTransform.apply(input);
+            Iterator<? extends J> it = inputTransform.apply(input, env);
             while (it.hasNext()) {
                 J item = it.next();
                 subAcc.accumulate(item, env);
@@ -160,5 +157,4 @@ public class AggInputFlatMap<I, E, J, O,
             return AggInputFlatMap.this;
         }
     }
-
 }
