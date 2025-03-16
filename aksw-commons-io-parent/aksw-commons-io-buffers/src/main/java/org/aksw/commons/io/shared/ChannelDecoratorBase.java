@@ -3,10 +3,10 @@ package org.aksw.commons.io.shared;
 import java.io.IOException;
 import java.nio.channels.Channel;
 
-import org.aksw.commons.util.closeable.AutoCloseableDecoratorBase;
+import org.aksw.commons.util.closeable.AutoCloseableWrapperBase;
 
 public class ChannelDecoratorBase<T extends Channel>
-    extends AutoCloseableDecoratorBase<T>
+    extends AutoCloseableWrapperBase<T>
     implements Channel
 {
     public ChannelDecoratorBase(T decoratee) {
@@ -15,7 +15,7 @@ public class ChannelDecoratorBase<T extends Channel>
 
     @Override
     public boolean isOpen() {
-        return decoratee.isOpen();
+        return delegate.isOpen();
     }
 
     @Override

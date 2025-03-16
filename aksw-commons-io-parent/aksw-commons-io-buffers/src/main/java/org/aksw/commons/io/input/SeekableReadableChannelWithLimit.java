@@ -18,33 +18,33 @@ public class SeekableReadableChannelWithLimit<A, X extends SeekableReadableChann
 
     @Override
     public ArrayOps<A> getArrayOps() {
-        return decoratee.getArrayOps();
+        return delegate.getArrayOps();
     }
 
     @Override
     public long position() throws IOException {
-        return decoratee.position();
+        return delegate.position();
     }
 
     @Override
     public void position(long pos) throws IOException {
-        decoratee.position(pos);
+        delegate.position(pos);
     }
 
     @Override
     public int read(A array, int position, int length) throws IOException {
-        long pos = decoratee.position();
+        long pos = delegate.position();
         int l = Math.max(0, (int)Math.min(endPos - pos, length));
         int result = l == 0
                 ? length == 0
                     ? 0
                     : -1
-                : decoratee.read(array, position, l);
+                : delegate.read(array, position, l);
         return result;
     }
 
     @Override
     public SeekableReadableChannel<A> cloneObject() {
-        return new SeekableReadableChannelWithLimit<>(decoratee.cloneObject(), endPos);
+        return new SeekableReadableChannelWithLimit<>(delegate.cloneObject(), endPos);
     }
 }

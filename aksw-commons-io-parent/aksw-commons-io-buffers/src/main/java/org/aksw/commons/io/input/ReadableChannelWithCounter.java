@@ -13,7 +13,7 @@ public class ReadableChannelWithCounter<A, X extends ReadableChannel<A>>
 
     @Override
     public int read(A array, int position, int length) throws IOException {
-        int n = decoratee.read(array, position, length);
+        int n = delegate.read(array, position, length);
         if (n > 0) {
             count += n;
         }
@@ -24,7 +24,7 @@ public class ReadableChannelWithCounter<A, X extends ReadableChannel<A>>
         return count;
     }
 
-    public X getDecoratee() {
-        return decoratee;
+    public X getDelegate() {
+        return delegate;
     }
 }

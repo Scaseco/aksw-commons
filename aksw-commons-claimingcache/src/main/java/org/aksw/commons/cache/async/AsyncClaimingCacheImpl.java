@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
@@ -27,8 +26,6 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
-import com.github.benmanes.caffeine.cache.Scheduler;
-
 
 /**
  * Implementation of async claiming cache.
@@ -151,8 +148,7 @@ public class AsyncClaimingCacheImpl<K, V>
         }
     }
 
-
-
+    @Override
     public RefFuture<V> claim(K key) {
         RefFuture<V> result;
 
@@ -172,7 +168,9 @@ public class AsyncClaimingCacheImpl<K, V>
                 return level1.computeIfAbsent(key, k -> {
                     // Wrap the loaded reference such that closing the fully loaded reference adds it to level 2
 
-                    logger.trace("Claiming item [" + key + "] from level2");
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("Claiming item [{}] from level2", key);
+                    }
                     CompletableFuture<V> future = level2.get(key);
                     level2.asMap().remove(key);
 
@@ -192,7 +190,9 @@ public class AsyncClaimingCacheImpl<K, V>
 
                             RefFutureImpl.cancelFutureOrCloseValue(future, null);
                             level1.remove(key);
-                            logger.trace("Item [" + key + "] was unclaimed. Transferring to level2.");
+                            if (logger.isTraceEnabled()) {
+                                logger.trace("Item [{}] was unclaimed. Transferring to level2.", key);
+                            }
                             level2.put(key, future);
 
                             // If there are no waiting threads we can remove the latch
@@ -277,7 +277,7 @@ public class AsyncClaimingCacheImpl<K, V>
 
                 if (!isGuarded) {
                     if (userEvictionListener != null) {
-                        userEvictionListener.onRemoval((K)k, (V)v, c);
+                        userEvictionListener.onRemoval(k, v, c);
                     }
                 }
             };
@@ -291,7 +291,6 @@ public class AsyncClaimingCacheImpl<K, V>
                     level3AwareEvictionListener.onRemoval(kk, vv, c);
                 }
             });
-
 
             // Cache loader that checks for existing items in level
             CacheLoader<K, V> level3AwareCacheLoader = k -> {
@@ -311,8 +310,7 @@ public class AsyncClaimingCacheImpl<K, V>
 
             AsyncLoadingCache<K, V> level2 = caffeine.buildAsync(level3AwareCacheLoader);
 
-
-            return new AsyncClaimingCacheImpl<K, V>(level1, level2, level3, evictionGuards, claimListener, unclaimListener, level3AwareEvictionListener);
+            return new AsyncClaimingCacheImpl<>(level1, level2, level3, evictionGuards, claimListener, unclaimListener, level3AwareEvictionListener);
         }
     }
 
@@ -320,37 +318,6 @@ public class AsyncClaimingCacheImpl<K, V>
         Builder<K, V> result = new Builder<>();
         result.setCaffeine(caffeine);
         return result;
-    }
-
-
-    public static void main(String[] args) throws InterruptedException {
-
-        AsyncClaimingCacheImpl<String, String> cache = AsyncClaimingCacheImpl.<String, String>newBuilder(
-                Caffeine.newBuilder().maximumSize(10).expireAfterWrite(1, TimeUnit.SECONDS).scheduler(Scheduler.systemScheduler()))
-            .setCacheLoader(key -> "Loaded " + key)
-            .setEvictionListener((k, v, c) -> System.out.println("Evicted " + k))
-            .setClaimListener((k, v) -> System.out.println("Claimed: " + k))
-            .setUnclaimListener((k, v) -> System.out.println("Unclaimed: " + k))
-            .build();
-
-        RefFuture<String> ref = cache.claim("hell");
-
-        Disposable disposable = cache.addEvictionGuard(k -> k.contains("hell"));
-
-        System.out.println(ref.await());
-        ref.close();
-
-        TimeUnit.SECONDS.sleep(5);
-
-        RefFuture<String> reclaim = cache.claim("hell");
-
-        disposable.close();
-
-        reclaim.close();
-
-        TimeUnit.SECONDS.sleep(5);
-
-        System.out.println("done");
     }
 
     /**

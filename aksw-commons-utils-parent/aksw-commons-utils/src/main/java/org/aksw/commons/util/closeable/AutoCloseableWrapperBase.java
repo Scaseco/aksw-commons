@@ -1,23 +1,29 @@
 package org.aksw.commons.util.closeable;
 
-public class AutoCloseableDecoratorBase<T extends AutoCloseable>
+public class AutoCloseableWrapperBase<T extends AutoCloseable>
     implements AutoCloseable
 {
-    protected T decoratee;
+    protected T delegate;
 
-    public AutoCloseableDecoratorBase(T decoratee) {
+    public AutoCloseableWrapperBase(T delegate) {
         super();
-        this.decoratee = decoratee;
+        this.delegate = delegate;
     }
 
-    protected T getDecoratee() {
-        return decoratee;
+    protected T getDelegate() {
+        return delegate;
     }
 
     @Override
     public void close() throws Exception {
-        if (decoratee != null) {
-             decoratee.close();
+        T tmp = getDelegate();
+        close(tmp);
+    }
+
+    public static void close(AutoCloseable autoCloseable) throws Exception {
+        // Wrapping the NULL-check in a method protects against concurrent modification of the reference.
+        if (autoCloseable != null) {
+            autoCloseable.close();
         }
     }
 }

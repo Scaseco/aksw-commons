@@ -26,7 +26,7 @@ public class ReadableChannelWithSkipDelimiter<T extends ReadableChannel<byte[]>>
         int result = 0;
         while (remainingSkipCount > 0) {
             if (ringBuffer.isEmpty()) {
-                int n = ringBuffer.fill(getDecoratee(), ringBuffer.length());
+                int n = ringBuffer.fill(getDelegate(), ringBuffer.length());
                 if (n == 0) {
                     result = -1;
                     break;
@@ -49,7 +49,7 @@ public class ReadableChannelWithSkipDelimiter<T extends ReadableChannel<byte[]>>
         if (!ringBuffer.isEmpty()) {
             result = ringBuffer.read(array, position, length);
         } else {
-            result = getDecoratee().read(array, position, length);
+            result = getDelegate().read(array, position, length);
         }
 
         return result;

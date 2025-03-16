@@ -60,7 +60,7 @@ public class ReadableChannelWithLimitByDelimiter<A, X extends ReadableChannel<A>
                     int allowed = isBlockMode
                             ? length
                             : Math.min(length, Ints.saturatedCast(nextSplitOffset - pos));
-                    result = getDecoratee().read(array, position, allowed);
+                    result = getDelegate().read(array, position, allowed);
                 } else {
                     // Read into a tmp buffer and stop on the first delimiter
                     int excessBufferSize = 1024;
@@ -71,7 +71,7 @@ public class ReadableChannelWithLimitByDelimiter<A, X extends ReadableChannel<A>
 
                     int l = Math.min(length, excessBufferSize);
 
-                    int n = getDecoratee().read(excessBuffer, 0, l);
+                    int n = getDelegate().read(excessBuffer, 0, l);
                     if (n >= 0) {
                         int i;
                         for (i = 0; i < n; ++i) {

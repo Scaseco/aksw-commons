@@ -23,8 +23,6 @@ public class LinkedListNode<T>
     public LinkedListNode<T> predecessor;
     public LinkedListNode<T> successor;
 
-    //public LinkedList<T> parent;
-    
     public void append(LinkedListNode<T> node) {
         successor = node;
         node.predecessor = this;
@@ -118,10 +116,10 @@ public class LinkedListNode<T>
         int result = Iterators.size(iterator());
         return result;
     }
-    
+
     /**
      * Iterator over the node objects (of which each holds an item) in the list
-     * 
+     *
      * @return
      */
     public Iterator<LinkedListNode<T>> nodeIterator() {

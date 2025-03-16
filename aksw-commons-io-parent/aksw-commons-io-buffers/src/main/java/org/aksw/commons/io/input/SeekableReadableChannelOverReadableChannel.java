@@ -23,12 +23,12 @@ public class SeekableReadableChannelOverReadableChannel<A>
             if (delta < 0) {
                 throw new IllegalStateException("Requested position is before base offset");
             } else if (delta > 0) {
-                long n = ReadableChannels.skip(decoratee, delta, array, position, length);
+                long n = ReadableChannels.skip(delegate, delta, array, position, length);
                 relPos += n;
             }
         }
 
-        int result = decoratee.read(array, position, length);
+        int result = delegate.read(array, position, length);
         if (result > 0) {
             relPos += result;
         }

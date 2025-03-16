@@ -18,22 +18,22 @@ public class SeekableReadableChannelWithOffset<A, X extends SeekableReadableChan
 
     @Override
     public int read(A array, int position, int length) throws IOException {
-        return decoratee.read(array, position, length);
+        return delegate.read(array, position, length);
     }
 
     @Override
     public ArrayOps<A> getArrayOps() {
-        return decoratee.getArrayOps();
+        return delegate.getArrayOps();
     }
 
     @Override
     public boolean isOpen() {
-        return decoratee.isOpen();
+        return delegate.isOpen();
     }
 
     @Override
     public long position() throws IOException {
-        long physicalPos = decoratee.position();
+        long physicalPos = delegate.position();
         long result = physicalPos - offset;
         return result;
     }
@@ -41,11 +41,11 @@ public class SeekableReadableChannelWithOffset<A, X extends SeekableReadableChan
     @Override
     public void position(long position) throws IOException {
         long p = offset + position;
-        decoratee.position(p);
+        delegate.position(p);
     }
 
     @Override
     public SeekableReadableChannel<A> cloneObject() {
-        return new SeekableReadableChannelWithOffset<>(decoratee.cloneObject(), offset);
+        return new SeekableReadableChannelWithOffset<>(delegate.cloneObject(), offset);
     }
 }

@@ -15,7 +15,7 @@ public class ReadableChannelSwitchableBase<A, X extends ReadableChannel<A>>
         Lock writeLock = rwl.writeLock();
         try {
             writeLock.lock();
-            this.decoratee = decoratee.get();
+            this.delegate = decoratee.get();
         } finally {
             writeLock.unlock();
         }
@@ -23,10 +23,10 @@ public class ReadableChannelSwitchableBase<A, X extends ReadableChannel<A>>
 
     /** Only call while locked. Take care to properly close the prior delegate!  */
     public void setDecoratee(X decoratee) {
-        this.decoratee = decoratee;
+        this.delegate = decoratee;
     }
 
-    public X getDecoratee() {
-        return decoratee;
+    public X getDelegate() {
+        return delegate;
     }
 }
