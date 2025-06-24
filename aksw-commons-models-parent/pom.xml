@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.aksw.commons</groupId>
 		<artifactId>aksw-commons-parent</artifactId>
-		<version>0.9.10</version>
+		<version>0.9.11-SNAPSHOT</version>
 	</parent>
 
 	<modules>
