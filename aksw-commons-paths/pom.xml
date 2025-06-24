@@ -4,6 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>aksw-commons-paths</artifactId>
+        <name>aksw-commons-paths</name>
 	<packaging>jar</packaging>
 
 	<parent>

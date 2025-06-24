@@ -4,6 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>aksw-commons-picocli</artifactId>
+        <name>aksw-commons-picocli</name>
 	<packaging>jar</packaging>
 
 	<parent>

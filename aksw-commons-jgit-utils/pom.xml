@@ -4,6 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>aksw-commons-jgit-utils</artifactId>
+        <name>aksw-commons-jgit-utils</name>
 	<packaging>jar</packaging>
 
 	<parent>

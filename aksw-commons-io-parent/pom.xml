@@ -4,6 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>aksw-commons-io-parent</artifactId>
+        <name>aksw-commons-io-parent</name>
 	<packaging>pom</packaging>
 
 	<parent>

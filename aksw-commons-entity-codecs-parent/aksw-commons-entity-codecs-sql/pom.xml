@@ -4,6 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>aksw-commons-entity-codecs-sql</artifactId>
+        <name>aksw-commons-entity-codecs-sql</name>
 	<packaging>jar</packaging>
 
 	<parent>

@@ -2,6 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>aksw-commons-models-csvw-domain</artifactId>
+        <name>aksw-commons-models-csvw-domain</name>
 	<packaging>jar</packaging>
 
 	<parent>

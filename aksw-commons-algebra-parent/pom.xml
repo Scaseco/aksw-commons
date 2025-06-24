@@ -4,6 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>aksw-commons-algebra-parent</artifactId>
+	<name>aksw-commons-algebra-parent</name>
 	<packaging>pom</packaging>
 
 	<parent>
