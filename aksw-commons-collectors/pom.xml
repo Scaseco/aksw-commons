@@ -4,12 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>aksw-commons-collectors</artifactId>
+        <name>aksw-commons-collectors</name>
 	<packaging>jar</packaging>
 
 	<parent>
 		<artifactId>aksw-commons-parent</artifactId>
 		<groupId>org.aksw.commons</groupId>
-		<version>0.9.11-SNAPSHOT</version>
+		<version>0.9.10-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>

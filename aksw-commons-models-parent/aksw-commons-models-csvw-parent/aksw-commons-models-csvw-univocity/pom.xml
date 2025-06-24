@@ -4,12 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>aksw-commons-models-csvw-univocity</artifactId>
+        <name>aksw-commons-models-csvw-univocity</name>
 	<packaging>jar</packaging>
 
 	<parent>
 		<artifactId>aksw-commons-models-csvw-parent</artifactId>
 		<groupId>org.aksw.commons</groupId>
-		<version>0.9.11-SNAPSHOT</version>
+		<version>0.9.10-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>

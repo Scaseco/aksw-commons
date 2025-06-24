@@ -4,11 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>aksw-commons-resources-test-config</artifactId>
+        <name>aksw-commons-resources-test-config</name>
 
 	<parent>
 		<artifactId>aksw-commons-parent</artifactId>
 		<groupId>org.aksw.commons</groupId>
-		<version>0.9.11-SNAPSHOT</version>
+		<version>0.9.10-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
