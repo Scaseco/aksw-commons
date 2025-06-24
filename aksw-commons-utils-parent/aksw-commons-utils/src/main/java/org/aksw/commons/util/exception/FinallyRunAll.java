@@ -36,6 +36,7 @@ import org.aksw.commons.util.function.ThrowingRunnable;
  * </pre>
  *
  */
+@Deprecated // Use Guava's Closer
 public class FinallyRunAll
     implements Runnable
 {

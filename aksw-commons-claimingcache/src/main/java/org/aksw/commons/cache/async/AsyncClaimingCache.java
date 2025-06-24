@@ -24,7 +24,7 @@ public interface AsyncClaimingCache<K, V> {
      * @return
      * @throws ExecutionException
      */
-    RefFuture<V> claim(K key); // throws ExecutionException;
+    RefFuture<V> claim(K key);
 
     /** Cannot raise an ExecutionException because it does not trigger loading */
     RefFuture<V> claimIfPresent(K key);
@@ -33,12 +33,6 @@ public interface AsyncClaimingCache<K, V> {
      * Protect eviction of certain keys as long as the guard is not disposed.
      * Disposable may immediately evict all no longer guarded items */
     Disposable addEvictionGuard(Predicate<? super K> predicate);
-
-    /**
-     * Get a resource without claiming it. Its cache entry may get evicted any time such that
-     * a later invocation of {@link #get(Object)} returns a fresh future
-     */
-    // CompletableFuture<V> get(K key);
 
     void invalidateAll();
 }

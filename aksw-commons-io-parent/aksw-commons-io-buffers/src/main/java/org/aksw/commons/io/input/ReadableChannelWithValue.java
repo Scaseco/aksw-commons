@@ -22,7 +22,7 @@ public class ReadableChannelWithValue<A, T, X extends ReadableChannel<A>>
         this.value = value;
     }
 
-    public X getDecoratee() {
-        return decoratee;
+    public X getDelegate() {
+        return delegate;
     }
 }

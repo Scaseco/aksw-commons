@@ -471,19 +471,20 @@ public class SliceAccessorImpl<A>
                 long endPageId = PageUtils.getPageIndexForOffset(endAbs, pageSize);
                 long indexInPage = PageUtils.getIndexInPage(startAbs, pageSize);
 
+                int nextTgtOffset = tgtOffset;
                 for (long i = startPageId; i <= endPageId; ++i) {
-                    long endIndex = i == endPageId
+                    long endIndexRaw = i == endPageId
                             ? PageUtils.getIndexInPage(endAbs, pageSize)
                             : pageSize;
+                    int endIndex = Math.toIntExact(endIndexRaw);
 
                     RefFuture<BufferView<A>> currentPageRef = getClaimedPages().get(i);
 
                     BufferView<A> buffer = currentPageRef.await();
-                    buffer.getRangeBuffer().readInto(tgt, tgtOffset, indexInPage, Ints.checkedCast(endIndex));
-
+                    buffer.getRangeBuffer().readInto(tgt, nextTgtOffset, indexInPage, endIndex);
+                    nextTgtOffset += endIndex;
                     indexInPage = 0;
                 }
-
 
 //                pageRange.claimByOffsetRange(startAbs, endAbs);
 //

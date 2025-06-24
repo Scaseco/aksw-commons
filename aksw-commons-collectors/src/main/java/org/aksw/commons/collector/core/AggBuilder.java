@@ -14,12 +14,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collector.Characteristics;
 
 import org.aksw.commons.collector.core.AggErrorHandler.AccError;
-import org.aksw.commons.collector.core.AggInputFilter.AccInputFilter;
-import org.aksw.commons.collector.core.AggInputSplit.AccInputSplit;
-import org.aksw.commons.collector.core.AggInputTransform.AccInputTransform;
-import org.aksw.commons.collector.core.AggOutputTransform.AccOutputTransform;
 import org.aksw.commons.collector.domain.Accumulator;
-import org.aksw.commons.collector.domain.Aggregator;
 import org.aksw.commons.collector.domain.ParallelAggregator;
 import org.aksw.commons.lambda.serializable.SerializableBiConsumer;
 import org.aksw.commons.lambda.serializable.SerializableBiFunction;
@@ -117,6 +112,7 @@ public class AggBuilder<I, E, O, ACC extends Accumulator<I, E, O>, AGG extends P
         return inputTransform2(fn2, state);
     }
 
+    /** input transform with support for the environment argument. */
     public static <I, E, J, O, ACC extends Accumulator<J, E, O>, AGG extends ParallelAggregator<J, E, O, ACC>> AggInputTransform<I, E, J, O, ACC, AGG>
         inputTransform2(SerializableBiFunction<? super I, E, ? extends J> inputTransform, AGG state) {
         return new AggInputTransform<>(state, inputTransform);
@@ -137,9 +133,15 @@ public class AggBuilder<I, E, O, ACC extends Accumulator<I, E, O>, AGG extends P
     }
 
     public static <I, E, J, O, ACC extends Accumulator<J, E, O>, AGG extends ParallelAggregator<J, E, O, ACC>> AggInputFlatMap<I, E, J, O, ACC, AGG>
-        inputFlatMap(SerializableFunction<I, Iterator<J>> inputTransform, AGG state) {
-        return new AggInputFlatMap<>(state, inputTransform);
+        inputFlatMap(SerializableFunction<I, ? extends Iterator<? extends J>> inputTransform, AGG state) {
+        SerializableBiFunction<? super I, E, ? extends Iterator<? extends J>> fn2 = (i, e) -> inputTransform.apply(i);
+        return inputFlatMap2(fn2, state);
     }
+
+    public static <I, E, J, O, ACC extends Accumulator<J, E, O>, AGG extends ParallelAggregator<J, E, O, ACC>> AggInputFlatMap<I, E, J, O, ACC, AGG>
+        inputFlatMap2(SerializableBiFunction<? super I, E, ? extends Iterator<? extends J>> inputTransform, AGG state) {
+    return new AggInputFlatMap<>(state, inputTransform);
+}
 
     public static <I, E, O, P, ACC extends Accumulator<I, E, O>, AGG extends ParallelAggregator<I, E, O, ACC>> AggOutputTransform<I, E, O, P, ACC, AGG>
         outputTransform(AGG state, SerializableFunction<? super O, ? extends P> outputTransform) {
@@ -371,5 +373,3 @@ public class AggBuilder<I, E, O, ACC extends Accumulator<I, E, O>, AGG extends P
 //    }
 
 }
-
-

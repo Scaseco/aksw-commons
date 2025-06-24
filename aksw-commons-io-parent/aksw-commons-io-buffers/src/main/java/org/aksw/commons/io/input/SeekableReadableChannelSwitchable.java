@@ -12,16 +12,16 @@ public class SeekableReadableChannelSwitchable<A>
 
     @Override
     public long position() throws IOException {
-        return decoratee.position();
+        return delegate.position();
     }
 
     @Override
     public void position(long pos) throws IOException {
-        decoratee.position(pos);
+        delegate.position(pos);
     }
 
     @Override
     public SeekableReadableChannel<A> cloneObject() {
-        return new SeekableReadableChannelSwitchable<>(decoratee.cloneObject());
+        return new SeekableReadableChannelSwitchable<>(delegate.cloneObject());
     }
 }

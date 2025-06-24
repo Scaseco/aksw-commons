@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.aksw.commons</groupId>
 		<artifactId>aksw-commons-bom</artifactId>
-		<version>0.9.9</version>
+		<version>0.9.10-SNAPSHOT</version>
 		<relativePath>aksw-commons-bom</relativePath>
 	</parent>
 
@@ -113,7 +113,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.2</version>
+				<version>3.13.0</version>
 				<configuration>
 					<release>${maven.compiler.release}</release>
 					<!-- <source>${maven.compiler.source}</source> <target>${maven.compiler.target}</target> -->

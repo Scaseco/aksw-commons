@@ -15,8 +15,6 @@ public class DerbyUtils {
     };
 
     public static void disableDerbyLog() {
-        // FieldId is expected to be something like: org.aksw.commons.util.derby.DerbyUtils.DEV_NULL
-        String fieldId = DerbyUtils.class.getName() + "." + "DEV_NULL";
-        System.setProperty("derby.stream.error.field", fieldId);
+        System.setProperty("derby.stream.error.field", "org.aksw.commons.util.derby.DerbyUtils.DEV_NULL");
     }
 }

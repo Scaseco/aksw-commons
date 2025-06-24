@@ -15,11 +15,11 @@ public class ReadableChannelDecoratorBase<A, X extends ReadableChannel<A>>
 
     @Override
     public ArrayOps<A> getArrayOps() {
-        return decoratee.getArrayOps();
+        return delegate.getArrayOps();
     }
 
     @Override
     public int read(A array, int position, int length) throws IOException {
-        return decoratee.read(array, position, length);
+        return delegate.read(array, position, length);
     }
 }

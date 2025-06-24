@@ -802,7 +802,7 @@ public class BufferOverReadableChannel<A>
     public static <A> void debuffer(ReadableChannel<A> channel) {
         ReadableChannelSwitchable<A> switchable = (ReadableChannelSwitchable<A>)channel;
         @SuppressWarnings("unchecked")
-        Channel<A> core = (Channel<A>)switchable.getDecoratee();
+        Channel<A> core = (Channel<A>)switchable.getDelegate();
 
         Lock writeLock = switchable.getReadWriteLock().writeLock();
         try {

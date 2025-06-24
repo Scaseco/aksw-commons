@@ -14,22 +14,22 @@ public class SeekableReadableChannelDecoratorBase<A, X extends SeekableReadableC
 
     @Override
     public ArrayOps<A> getArrayOps() {
-        return decoratee.getArrayOps();
+        return delegate.getArrayOps();
     }
 
     @Override
     public int read(A array, int position, int length) throws IOException {
-        return decoratee.read(array, position, length);
+        return delegate.read(array, position, length);
     }
 
     @Override
     public long position() throws IOException {
-        return decoratee.position();
+        return delegate.position();
     }
 
     @Override
     public void position(long pos) throws IOException {
-        decoratee.position(pos);
+        delegate.position(pos);
     }
 
     @Override
