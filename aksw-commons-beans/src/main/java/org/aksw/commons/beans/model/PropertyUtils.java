@@ -24,9 +24,17 @@ public class PropertyUtils {
      * @return
      */
     public static <T> T applyIfPresent(ThrowingConsumer<? super T> setter, ThrowingSupplier<? extends T> getter) {
+        return apply(false, setter, getter);
+    }
+
+    public static <T> T applyIfPresent(ThrowingFunction<? super T, ?> setter, ThrowingSupplier<? extends T> getter) {
+        return apply(false, setter, getter);
+    }
+
+    public static <T> T apply(boolean setNull, ThrowingConsumer<? super T> setter, ThrowingSupplier<? extends T> getter) {
         try {
             T result = getter.get();
-            if (result != null) {
+            if (setNull || result != null) {
                 setter.accept(result);
             }
             return result;
@@ -35,10 +43,10 @@ public class PropertyUtils {
         }
     }
 
-    public static <T> T applyIfPresent(ThrowingFunction<? super T, ?> setter, ThrowingSupplier<? extends T> getter) {
+    public static <T> T apply(boolean setNull, ThrowingFunction<? super T, ?> setter, ThrowingSupplier<? extends T> getter) {
         try {
             T result = getter.get();
-            if (result != null) {
+            if (setNull || result != null) {
                 setter.apply(result);
             }
             return result;
@@ -46,6 +54,7 @@ public class PropertyUtils {
             throw new RuntimeException(e);
         }
     }
+
 
     /**
      * If targetGetter yields null, invoke the targetSetter with the valueGetter's result.
@@ -61,7 +70,6 @@ public class PropertyUtils {
             result = valueGetter.get();
             targetSetter.accept(result);
         }
-
         return result;
     }
 
@@ -79,8 +87,6 @@ public class PropertyUtils {
             result = valueGetter.get();
             targetSetter.apply(result);
         }
-
         return result;
     }
-
 }

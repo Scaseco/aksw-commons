@@ -3,6 +3,7 @@ package org.aksw.commons.io.buffer.ring;
 import java.io.IOException;
 import java.util.Objects;
 
+import org.aksw.commons.io.input.ReadableChannels;
 import org.aksw.commons.io.input.ReadableSource;
 
 /**
@@ -18,10 +19,10 @@ import org.aksw.commons.io.input.ReadableSource;
  * @param <A>
  */
 public abstract class RingBufferBase<A>
-    implements ReadableSource<A>
+    implements ReadableSource<A> // XXX ReadableSource is ReadableChannel without IO - naming not optimal because 'source' suggests factory for channels.
 {
-    protected final A buffer;
-    protected final int bufferLen;
+    protected A buffer;
+    protected int bufferLen;
 
     protected int start;
     protected int end;
@@ -44,6 +45,24 @@ public abstract class RingBufferBase<A>
         }
     }
 
+    /** The internal array is not exposed because the implementation may change to e.g. use
+     *  an array of arrays to store the data. */
+    // public A getArray() {
+    //     return buffer;
+    // }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getEnd() {
+        return end;
+    }
+
+    public boolean isEmpty() {
+        return isEmpty;
+    }
+
     /**
      *
      * @param source
@@ -64,18 +83,31 @@ public abstract class RingBufferBase<A>
         return result;
     }
 
+    /**
+     * Returns the maxmimum number of bytes that can be appended in a single operation
+     * before the end marker flips over or reaches the start marker.
+     * */
+    public int appendCapacity() {
+        // If the end marker reaches bufferLen then it is immediately normalized to 0.
+        // So the end marker never equals bufferLen.
+        int n = start < end || isEmpty
+            ? bufferLen - end
+            : start - end;
+        return n;
+    }
+
+    // A value of 0 means that no bytes were read from source
+    // This can be due to: source consumed or no capacity left -
+    // the return value should indicate the cause.
     public int fill(ReadableSource<A> source) throws IOException {
         // If the end marker reaches bufferLen then it is immediately normalized to 0.
-        // Se the end marker never equals bufferLen.
+        // So the end marker never equals bufferLen.
 
         int n;
         if (start < end || isEmpty) {
             // [end, bufferLen)
             int remainingSpace = bufferLen - end;
             n = source.read(buffer, end, remainingSpace);
-            if (n > 0) {
-                end += n;
-            }
         } else {
             // [end, start)
             int d = start - end;
@@ -83,20 +115,10 @@ public abstract class RingBufferBase<A>
                 n = 0; // no capacity
             } else {
                 n = source.read(buffer, end, d);
-                if (n > 0) {
-                    end += n;
-                }
             }
         }
 
-        if (n > 0) {
-            isEmpty = false;
-            if (end == bufferLen) {
-                end = 0;
-            } else if (end > bufferLen) {
-                throw new IllegalStateException("Should not happen: End pointer exceeded buffer length");
-            }
-        }
+        incEnd(n);
 
         if (n < 0) {
             n = 0;
@@ -105,11 +127,24 @@ public abstract class RingBufferBase<A>
         return n;
     }
 
+    protected void incEnd(int n) {
+        if (n > 0) {
+            end += n;
+            isEmpty = false;
+            if (end == bufferLen) {
+                end = 0;
+            } else if (end > bufferLen) {
+                throw new IllegalStateException("Should not happen: End pointer exceeded buffer length");
+            }
+        }
+    }
+
+    /** The number of used bytes - distance between start and end. */
     public int available() {
         return bufferLen - capacity();
     }
 
-    // The number of unused bytes - distance between end and start
+    /** The number of unused bytes - distance between end and start. */
     public int capacity() {
         return isEmpty
             ? bufferLen
@@ -124,24 +159,36 @@ public abstract class RingBufferBase<A>
 
     /** Increment the start pointer by the given amount. Raises an invalid argument exception if the length is
      *  greater than {@link #available()}. */
-    public void skip(int length) {
+    public RingBufferBase<A> skip(int length) {
         int n = available();
         if (length > n) {
             throw new IllegalArgumentException("Requested skipping " + length + " elements but only " + n + " available.");
         }
-
-        start += length;
-        if (start >= bufferLen) {
-            start -= bufferLen;
-        }
-
-        if (start == end) {
-            isEmpty = true;
-        }
+        incStart(length);
+        return this;
     }
 
+    /** Take items from the start of the buffer. */
     @Override
     public int read(A tgt, int tgtOffset, int length) throws IOException {
+        int savedStart = start;
+        int result = preRead(length);
+        if (result > 0) {
+            getArrayOps().copy(buffer, savedStart, tgt, tgtOffset, result);
+        }
+        return result;
+    }
+
+    /**
+     * Returns a number of 'n' bytes that can be read from the current start marker up
+     * to the requested length.
+     *
+     * When this method returns, then the fields of this buffer have been updated to
+     * the state after the read.
+     * However, the actual data can be accessed by reading 'n' bytes from the original start
+     * position. (See implementation of read.)
+     */
+    protected int preRead(int length) {
         int result;
         if (start == end && isEmpty) {
             result = -1;
@@ -149,30 +196,62 @@ public abstract class RingBufferBase<A>
             if (start < end) {
                 int remainingSpace = end - start;
                 result = Math.min(remainingSpace, length);
-                getArrayOps().copy(buffer, start, tgt, tgtOffset, result);
+                // getArrayOps().copy(buffer, start, tgt, tgtOffset, result);
             } else {
                 int remainingSpace = bufferLen - start;
                 result = Math.min(remainingSpace, length);
-                getArrayOps().copy(buffer, start, tgt, tgtOffset, result);
+                // getArrayOps().copy(buffer, start, tgt, tgtOffset, result);
             }
 
-            if (result > 0) {
-                start += result;
-                if (start == bufferLen) {
-                    start = 0;
-                }
-
-                if (start == end) {
-                    start = 0;
-                    end = 0;
-                    isEmpty = true;
-                }
-            }
+            incStart(result);
         }
         return result;
     }
 
-    public boolean isEmpty() {
-        return isEmpty;
+    protected void incStart(int amount) {
+        if (amount > 0) {
+            start += amount;
+            if (start == bufferLen) {
+                start = 0;
+            }
+
+            if (start == end) {
+                start = 0;
+                end = 0;
+                isEmpty = true;
+            }
+        }
+    }
+
+    /**
+     * Set the buffer to a new size.
+     *
+     * @implNote
+     *   Internally copies existing data to a new array.
+     *   The new size must be at least 1 and greater or equal to the available data, otherwise
+     *   an {@link IllegalArgumentException} is raised.
+     */
+    public void resize(int newSize) {
+        if (newSize < 1) {
+            throw new IllegalArgumentException("Requested new size (" + newSize + ") must be at least 1");
+        }
+
+        int avail = available();
+        if (newSize < avail) {
+            throw new IllegalArgumentException("Requested new size (" + newSize + ") must be greater than or equal to the amount of available data (" + avail + ")");
+        }
+
+        A newBuffer = getArrayOps().create(newSize);
+        try {
+            ReadableChannels.readFully(this, newBuffer, 0, avail);
+        } catch (IOException e) {
+            throw new RuntimeException("Should not happen", e);
+        }
+
+        this.buffer = newBuffer;
+        this.bufferLen = newSize;
+        this.start = 0;
+        this.end = avail;
+        this.isEmpty = avail == 0;
     }
 }

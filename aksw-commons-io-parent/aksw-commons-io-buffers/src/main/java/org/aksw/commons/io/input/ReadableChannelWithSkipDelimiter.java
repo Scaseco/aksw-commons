@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import org.aksw.commons.io.buffer.ring.RingBufferForBytes;
 
+/**
+ * Wrapper whose read method skips over the next byte delimiter (usually newline).
+ */
 public class ReadableChannelWithSkipDelimiter<T extends ReadableChannel<byte[]>>
     extends ReadableChannelDecoratorBase<byte[], T>
 {

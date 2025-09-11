@@ -52,11 +52,11 @@
 		<junit.version>4.13.2</junit.version>
 		<xstream.version>1.4.20</xstream.version>
 		<commons-compress.version>1.24.0</commons-compress.version>
-		<picocli.version>4.7.5</picocli.version>
+		<picocli.version>4.7.7</picocli.version>
 		<univocity.version>2.9.1</univocity.version>
 		<caffeine.version>3.1.8</caffeine.version>
 		<kryo-serializers.version>0.42</kryo-serializers.version>
-		<commons-lang3.version>3.17.0</commons-lang3.version>
+		<commons-lang3.version>3.18.0</commons-lang3.version>
 		<rxjava.version>3.1.8</rxjava.version>
 		<commons-validator.version>1.7</commons-validator.version>
 		<protonpack.version>1.16</protonpack.version>
@@ -598,10 +598,12 @@
 		</profile>
 	</profiles>
 	<distributionManagement>
+	    <!--
 		<repository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
+		-->
 		<snapshotRepository>
 			<id>maven.aksw.snapshots</id>
 			<name>AKSW Snapshot Repository</name>
