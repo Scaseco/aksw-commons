@@ -1,6 +1,8 @@
 package org.aksw.commons.util.list;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class ListUtils {
 
@@ -29,5 +31,14 @@ public class ListUtils {
 
     public static <T> T lastOrDefault(List<T> list, T defaultValue) {
         return list.isEmpty() ? defaultValue : list.get(list.size() - 1);
+    }
+
+    public static <I, O> List<O> map(List<I> inList, Function<I, O> mapper) {
+        List<O> outList = new ArrayList<>(inList.size());
+        inList.forEach(inItem -> {
+            O outItem = mapper.apply(inItem);
+            outList.add(outItem);
+        });
+        return outList;
     }
 }
