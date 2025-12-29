@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>aksw-commons-collections</artifactId>
-        <name>aksw-commons-collections</name>
+	<artifactId>aksw-commons-utils-trie</artifactId>
+        <name>aksw-commons-utils-trie</name>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -15,33 +15,18 @@
 
 	<dependencies>
 
-		<!-- Collections -->
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.aksw.commons</groupId>
-			<artifactId>aksw-commons-utils</artifactId>
-		</dependency>
-
         <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>org.aksw.commons</groupId>
-			<artifactId>aksw-commons-lambdas-throwing</artifactId>
-		</dependency>
-
 		<!-- Logging -->
+<!--
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-
+-->
 
 		<!-- Unit Testing -->
 		<dependency>

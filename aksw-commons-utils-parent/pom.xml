@@ -17,6 +17,7 @@
 		<module>aksw-commons-utils</module>
 		<module>aksw-commons-utils-xml</module>
 		<module>aksw-commons-utils-gson</module>
+		<module>aksw-commons-utils-trie</module>
 	</modules>
 
 	<dependencies>
