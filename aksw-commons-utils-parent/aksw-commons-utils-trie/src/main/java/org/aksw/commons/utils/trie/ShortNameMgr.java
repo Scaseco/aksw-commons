@@ -123,7 +123,8 @@ public class ShortNameMgr {
         int i = cs.length() - 1;
         for (; i >= 0; --i) {
             char c = cs.charAt(i);
-            if (c == '/' || c == '#' || c == '.') {
+            // Do not include '.' - only use / and # to form local names.
+            if (c == '/' || c == '#') { // || c == '.') {
                 if (acceptableCharSeen) {
                     ++i;
                     break;
