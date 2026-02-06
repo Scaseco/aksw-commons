@@ -13,8 +13,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
-import javax.annotation.concurrent.ThreadSafe;
-
 import org.aksw.commons.io.buffer.plain.Buffer;
 import org.aksw.commons.io.buffer.plain.SubBuffer;
 import org.aksw.commons.io.input.ReadableChannel;
@@ -53,7 +51,6 @@ import com.google.common.primitives.Ints;
  * @author raven
  *
  */
-@ThreadSafe
 public class BufferOverReadableChannel<A>
     implements Buffer<A>
 {

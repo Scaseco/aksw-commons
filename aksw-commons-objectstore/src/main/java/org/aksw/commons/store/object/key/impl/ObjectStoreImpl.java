@@ -24,7 +24,6 @@ import org.aksw.commons.txn.impl.TxnHandler;
 import org.aksw.commons.txn.impl.TxnMgrImpl;
 import org.aksw.commons.txn.impl.TxnUtils;
 import org.aksw.commons.util.ref.RefFuture;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -119,7 +118,7 @@ public class ObjectStoreImpl
                 .setCacheLoader(new CacheLoader<org.aksw.commons.path.core.Path<String>, ObjectInfo>() {
 
                     @Override
-                    public @Nullable ObjectInfo load(org.aksw.commons.path.core.Path<String> key) throws Exception {
+                    public ObjectInfo load(org.aksw.commons.path.core.Path<String> key) throws Exception {
 
                         // Lock the file while we read from it
                         Txn txn = txnMgr.newTxn(true, false);
@@ -145,7 +144,7 @@ public class ObjectStoreImpl
                     }
 
                     @Override
-                    public @Nullable ObjectInfo reload(org.aksw.commons.path.core.Path<String> key, ObjectInfo oldValue) throws Exception {
+                    public ObjectInfo reload(org.aksw.commons.path.core.Path<String> key, ObjectInfo oldValue) throws Exception {
                         // TODO Custom reload handling?
                         return CacheLoader.super.reload(key, oldValue);
                     }

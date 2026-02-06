@@ -41,7 +41,6 @@ import org.aksw.commons.index.util.MapSupplier;
 import org.aksw.commons.index.util.SetSupplier;
 import org.aksw.commons.index.util.TupleValueFunction;
 import org.aksw.commons.tuple.bridge.TupleBridge;
-import org.checkerframework.checker.units.qual.C;
 
 import com.google.common.collect.HashBiMap;
 
