@@ -6,15 +6,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.jgit.api.TransportConfigCallback;
-import org.eclipse.jgit.transport.JschConfigSessionFactory;
-import org.eclipse.jgit.transport.OpenSshConfig;
-import org.eclipse.jgit.transport.SshSessionFactory;
-import org.eclipse.jgit.transport.SshTransport;
-import org.eclipse.jgit.util.FS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.jcraft.jsch.IdentityRepository;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -27,22 +18,31 @@ import com.jcraft.jsch.agentproxy.USocketFactory;
 import com.jcraft.jsch.agentproxy.connector.SSHAgentConnector;
 import com.jcraft.jsch.agentproxy.usocket.JNAUSocketFactory;
 
+import org.eclipse.jgit.api.TransportConfigCallback;
+import org.eclipse.jgit.transport.JschConfigSessionFactory;
+import org.eclipse.jgit.transport.OpenSshConfig;
+import org.eclipse.jgit.transport.SshSessionFactory;
+import org.eclipse.jgit.transport.SshTransport;
+import org.eclipse.jgit.util.FS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Utils for working with Jgit; especially for connecting it to ssh.
- * 
+ *
  * @author Claus Stadler
  *
  */
 public class JgitUtils {
-	private static final Logger logger = LoggerFactory.getLogger(JgitUtils.class);
-	
-	/**
-	 * List all files for which there exists another file with a '.pub' suffix
-	 * 
-	 * @param path
-	 * @return
-	 * @throws IOException
-	 */
+    private static final Logger logger = LoggerFactory.getLogger(JgitUtils.class);
+
+    /**
+     * List all files for which there exists another file with a '.pub' suffix
+     *
+     * @param path
+     * @return
+     * @throws IOException
+     */
     public static List<Path> listPrivateKeys(Path path) throws IOException {
         List<Path> result = Files.list(path)
                 .filter(p -> !p.getFileName().toAbsolutePath().endsWith(".pub"))
@@ -166,7 +166,7 @@ public class JgitUtils {
     public static TransportConfigCallback createDefaultTransportConfigCallback() {
         SshSessionFactory sshSessionFactory = createSshSessionFactory();
 
-    	return transport -> {
+        return transport -> {
             if(transport instanceof SshTransport) {
                 SshTransport sshTransport = (SshTransport) transport;
                 sshTransport.setSshSessionFactory(sshSessionFactory);
@@ -174,7 +174,7 @@ public class JgitUtils {
         };
     }
 
-    
+
 //    public static void main(String[] args) throws Exception {
 //
 //        Path fullPath = gitCacheBase.resolve(relPath).toAbsolutePath();
