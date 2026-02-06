@@ -1,6 +1,11 @@
 package org.aksw.commons.io.hadoop.binseach.v2;
 
 public class BinSearchLevelCache {
+
+    /**
+     * The level at which to switch to a fluid (=evicting) cache.
+     * The top levels may use a fixed cache which does not do eviction.
+     */
     protected int fluidLevel;
     protected BinSearchCache fixedCache;
     protected BinSearchCache fluidCache;

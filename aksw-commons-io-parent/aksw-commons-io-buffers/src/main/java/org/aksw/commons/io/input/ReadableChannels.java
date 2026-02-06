@@ -173,4 +173,16 @@ public class ReadableChannels {
             }
         };
     }
+
+    /*
+    public static String byteSourceToString(ReadableSource<byte[]> byteSource, Charset charset) {
+        String result;
+        try (InputStream in = ReadableChannels.newInputStream(ReadableChannels.newChannel(byteSource))) {
+            result = IOUtils.toString(in, charset);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+    */
 }
