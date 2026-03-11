@@ -1,25 +1,25 @@
 package org.aksw.commons.collections.utils;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.Streams;
 
 import org.aksw.commons.collections.IteratorUtils;
 import org.aksw.commons.lambda.throwing.ThrowingBiConsumer;
 import org.aksw.commons.lambda.throwing.ThrowingFunction;
-
-import com.google.common.collect.AbstractIterator;
-import com.google.common.collect.Streams;
 
 public class StreamUtils {
 
@@ -264,6 +264,91 @@ public class StreamUtils {
             try {
                 if (resource != null) {
                     closer.accept(resource, enumerable);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static <T, R, E> Stream<T> fromIterableResource(
+            Callable<R> resourceSupplier,
+            ThrowingFunction<? super R, E> toIterator,
+            Predicate<? super E> hasNext,
+            ThrowingFunction<? super E, T> next,
+            ThrowingBiConsumer<? super R, ? super E> closer) {
+        IteratorOverIterableResource<T, R, E> it = new IteratorOverIterableResource<>(resourceSupplier, toIterator, hasNext, next, closer);
+        Stream<T> result = Streams.stream(it).onClose(it::close);
+        return result;
+    }
+
+    public static class IteratorOverIterableResource<T, R, E>
+        extends AbstractIterator<T>
+        implements AutoCloseable
+    {
+        protected Callable<R> resourceSupplier;
+        protected ThrowingFunction<? super R, E> toIterator;
+        protected Predicate<? super E> hasNext;
+        protected ThrowingFunction<? super E, T> next;
+        protected ThrowingBiConsumer<? super R, ? super E> closer;
+
+        protected boolean isClosed = false;
+        protected R resource;
+        protected E iterator;
+
+        public IteratorOverIterableResource(
+            Callable<R> resourceSupplier,
+            ThrowingFunction<? super R, E> toIterator,
+            Predicate<? super E> hasNext,
+            ThrowingFunction<? super E, T> next,
+            ThrowingBiConsumer<? super R, ? super E> closer) {
+            this.resourceSupplier = resourceSupplier;
+            this.toIterator = toIterator;
+            this.hasNext = hasNext;
+            this.next = next;
+            this.closer = closer;
+        }
+
+        @Override
+        protected T computeNext() {
+            if (isClosed) {
+                throw new IllegalStateException("already closed");
+            }
+
+            if (iterator == null) {
+                if (resource == null) {
+                    try {
+                        resource = resourceSupplier.call();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    Objects.requireNonNull(resource, "Resource supplier was expected to supply a resource but returned null.");
+                    try {
+                        iterator = toIterator.apply(resource);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            T result;
+            try {
+                boolean b = hasNext.test(iterator);
+                result = b
+                    ? next.apply(iterator)
+                    : endOfData();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return result;
+        }
+
+        @Override
+        public void close() {
+            isClosed = true;
+            try {
+                if (resource != null) {
+                    closer.accept(resource, iterator);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
