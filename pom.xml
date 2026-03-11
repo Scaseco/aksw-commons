@@ -76,6 +76,7 @@
 	</properties>
 
 	<modules>
+		<module>aksw-commons-bom</module>
 		<module>aksw-commons-resources-test-config</module>
 
 		<module>aksw-commons-collections</module>
@@ -101,7 +102,6 @@
 		<module>aksw-commons-algebra-parent</module>
 
 		<module>aksw-commons-legacy</module>
-		<module>aksw-commons-bom</module>
 	</modules>
 
 	<build>
