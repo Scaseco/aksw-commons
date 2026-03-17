@@ -5,6 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>aksw-commons-bom</artifactId>
 	<packaging>pom</packaging>
+	<name>aksw-commons-bom</name>
 
 	<parent>
 		<groupId>org.aksw.commons</groupId>
