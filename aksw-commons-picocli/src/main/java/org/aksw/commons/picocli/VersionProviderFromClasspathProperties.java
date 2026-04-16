@@ -10,9 +10,6 @@ import picocli.CommandLine.IVersionProvider;
 /**
  * Implementation of picocli's {@link IVersionProvider} that reads the version string
  * from an entry of a properties file on the class path with a specific key.
- * 
- * @author raven
- *
  */
 public abstract class VersionProviderFromClasspathProperties implements IVersionProvider {
 
@@ -32,5 +29,4 @@ public abstract class VersionProviderFromClasspathProperties implements IVersion
         String[] result = getStrings(properties).toArray(new String[0]);
         return result;
     }
-
 }

@@ -44,35 +44,35 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<gpg.keyname>AKSW</gpg.keyname>
 
-		<slf4j.version>2.0.17</slf4j.version>
-		<log4j.version>2.25.3</log4j.version>
+		<slf4j.version>2.1.0-alpha1</slf4j.version>
+		<log4j.version>2.25.4</log4j.version>
 
 		<gson.version>2.13.2</gson.version>
-		<guava.version>33.5.0-jre</guava.version>
+		<guava.version>33.6.0-jre</guava.version>
 		<commons-collections4.version>4.5.0</commons-collections4.version>
 		<junit.version>4.13.2</junit.version>
 		<xstream.version>1.4.21</xstream.version>
+		<commons-io.version>2.21.0</commons-io.version>
 		<commons-compress.version>1.28.0</commons-compress.version>
 		<picocli.version>4.7.7</picocli.version>
 		<univocity.version>2.9.1</univocity.version>
 		<caffeine.version>3.2.3</caffeine.version>
-		<kryo-serializers.version>0.42</kryo-serializers.version>
-		<commons-lang3.version>3.18.0</commons-lang3.version>
-		<rxjava.version>3.1.8</rxjava.version>
-		<commons-validator.version>1.7</commons-validator.version>
+		<kryo-serializers.version>0.42</kryo-serializers.version> <!-- don't auto-upgrade; kryo version will mismatch -->
+		<commons-lang3.version>3.20.0</commons-lang3.version>
+		<rxjava.version>3.1.12</rxjava.version>
+		<commons-validator.version>1.10.1</commons-validator.version>
 		<protonpack.version>1.16</protonpack.version>
-		<commons-io.version>2.17.0</commons-io.version>
 		<jcraft.version>0.0.9</jcraft.version>
-		<jgit.version>5.6.1.202002131546-r</jgit.version>
-		<jaxb-api.version>2.3.1</jaxb-api.version>
-		<hadoop.version>3.4.0</hadoop.version>
+		<jgit.version>5.6.1.202002131546-r</jgit.version> <!-- don't auto-upgrade -->
+		<jaxb-api.version>2.4.0-b180830.0359</jaxb-api.version>
+		<hadoop.version>3.5.0</hadoop.version>
 		<!-- <slf4j.version>2.0.0-alpha5</slf4j.version> -->
-		<jackson.version>2.15.2</jackson.version>
-		<streamex.version>0.8.2</streamex.version>
+		<jackson.version>2.21.2</jackson.version>
+		<streamex.version>0.8.4</streamex.version>
 
 		<nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
 		<maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
-		<maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
 	</properties>
 
 	<modules>
@@ -458,14 +458,14 @@
 				<version>${protonpack.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-compress</artifactId>
-				<version>${commons-compress.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
 				<version>${commons-io.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-compress</artifactId>
+				<version>${commons-compress.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>info.picocli</groupId>
